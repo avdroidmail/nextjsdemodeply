@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next.js 15+ Interactive App Router Demo",
-  description: "A state-of-the-art Next.js showcase app featuring React Server Components, Server Actions, PPR, and live CLI terminal.",
-  keywords: ["Next.js", "React 19", "App Router", "TypeScript", "Server Components"],
+  title: "World Explorer - Country Directory & Insights",
+  description: "A simple and beautiful country directory application powered by Next.js 15 App Router and local MySQL database nextjsdemo.",
+  keywords: ["Country Directory", "MySQL", "Next.js 15", "React 19", "TypeScript"],
 };
 
 export default function RootLayout({

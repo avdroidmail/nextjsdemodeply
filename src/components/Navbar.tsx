@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import React from 'react';
 
-export default function Navbar() {
-  const [activeTab, setActiveTab] = useState('home');
+interface NavbarProps {
+  dbSource?: string;
+  totalCount: number;
+}
 
+export default function Navbar({ dbSource = 'MySQL (nextjsdemo)', totalCount }: NavbarProps) {
   return (
     <header style={{
       position: 'sticky',
@@ -13,8 +15,8 @@ export default function Navbar() {
       zIndex: 50,
       backdropFilter: 'blur(20px)',
       WebkitBackdropFilter: 'blur(20px)',
-      backgroundColor: 'rgba(7, 9, 14, 0.75)',
-      borderBottom: '1px solid var(--border-color)',
+      backgroundColor: 'rgba(7, 9, 14, 0.8)',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
     }}>
       <div style={{
         maxWidth: '1280px',
@@ -22,88 +24,58 @@ export default function Navbar() {
         padding: '16px 24px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px'
       }}>
-        {/* Brand Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+        {/* Brand Logo & Title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '10px',
+            width: '42px',
+            height: '42px',
+            borderRadius: '12px',
             background: 'linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#fff',
-            fontWeight: '800',
-            fontSize: '18px',
-            boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)'
+            fontSize: '22px',
+            boxShadow: '0 0 20px rgba(6, 182, 212, 0.4)'
           }}>
-            N
+            🌍
           </div>
           <div>
-            <span style={{ fontWeight: '800', fontSize: '1.125rem', color: '#fff', letterSpacing: '-0.02em' }}>
-              Next.js <span style={{ color: 'var(--accent-cyan)' }}>15+</span>
-            </span>
-            <span style={{
-              fontSize: '0.65rem',
-              display: 'block',
-              color: 'var(--text-dim)',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase'
+            <h1 style={{
+              fontWeight: '800',
+              fontSize: '1.25rem',
+              color: '#ffffff',
+              letterSpacing: '-0.02em',
+              margin: 0,
+              lineHeight: 1.2
             }}>
-              App Router Demo
+              Country Directory <span style={{ color: 'var(--accent-cyan)', fontSize: '0.85rem' }}>Next.js 15+</span>
+            </h1>
+            <span style={{
+              fontSize: '0.75rem',
+              display: 'block',
+              color: 'var(--text-muted)',
+              marginTop: '2px'
+            }}>
+              Powered by MySQL DB (<code style={{ color: 'var(--accent-emerald)', background: 'rgba(16,185,129,0.1)', padding: '2px 6px', borderRadius: '4px' }}>nextjsdemo</code>)
             </span>
           </div>
-        </Link>
+        </div>
 
-        {/* Navigation Links */}
-        <nav style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          background: 'rgba(255, 255, 255, 0.03)',
-          padding: '4px',
-          borderRadius: '9999px',
-          border: '1px solid rgba(255, 255, 255, 0.08)'
-        }}>
-          {[
-            { id: 'home', label: 'Overview', href: '#overview' },
-            { id: 'lab', label: 'Feature Lab', href: '#lab' },
-            { id: 'architecture', label: 'Architecture', href: '#architecture' },
-            { id: 'terminal', label: 'CLI Terminal', href: '#terminal' },
-          ].map((item) => (
-            <a
-              key={item.id}
-              href={item.href}
-              onClick={() => setActiveTab(item.id)}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '9999px',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                color: activeTab === item.id ? '#ffffff' : 'var(--text-muted)',
-                backgroundColor: activeTab === item.id ? 'rgba(99, 102, 241, 0.25)' : 'transparent',
-                border: activeTab === item.id ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid transparent',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Right CTA / Status Badge */}
+        {/* Database Status Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            padding: '6px 12px',
+            padding: '6px 14px',
             borderRadius: '9999px',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            backgroundColor: 'rgba(16, 185, 129, 0.12)',
             border: '1px solid rgba(16, 185, 129, 0.3)',
-            fontSize: '0.75rem',
+            fontSize: '0.8rem',
             color: 'var(--accent-emerald)',
             fontWeight: '600'
           }}>
@@ -115,18 +87,20 @@ export default function Navbar() {
               boxShadow: '0 0 8px var(--accent-emerald)',
               display: 'inline-block'
             }} />
-            Turbo Engine Active
+            DB Live: {dbSource}
           </div>
 
-          <a
-            href="https://nextjs.org/docs"
-            target="_blank"
-            rel="noreferrer"
-            className="btn-secondary"
-            style={{ padding: '8px 16px', fontSize: '0.875rem' }}
-          >
-            Docs ↗
-          </a>
+          <div style={{
+            padding: '6px 14px',
+            borderRadius: '9999px',
+            background: 'rgba(99, 102, 241, 0.15)',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
+            fontSize: '0.8rem',
+            color: '#a5b4fc',
+            fontWeight: '600'
+          }}>
+            {totalCount} Countries Loaded
+          </div>
         </div>
       </div>
     </header>
