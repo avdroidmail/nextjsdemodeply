@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { Country } from '@/types/country';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const rows = await query<any[]>('SELECT * FROM countries ORDER BY common_name ASC');

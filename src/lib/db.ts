@@ -1,17 +1,25 @@
 import mysql from 'mysql2/promise';
 
 let pool: mysql.Pool | null = null;
+let currentHost: string | null = null;
 
 export function getPool() {
-  if (!pool) {
+  const host = process.env.DB_HOST || 'localhost';
+  const user = process.env.DB_USER || 'root';
+  const password = process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : 'root';
+  const database = process.env.DB_NAME || 'nextjsdemo';
+
+  if (!pool || currentHost !== host) {
+    currentHost = host;
     pool = mysql.createPool({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : 'root',
-      database: process.env.DB_NAME || 'nextjsdemo',
+      host,
+      user,
+      password,
+      database,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
+      connectTimeout: 10000,
     });
   }
   return pool;
