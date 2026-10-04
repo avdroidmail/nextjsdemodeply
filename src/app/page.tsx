@@ -7,11 +7,11 @@ import CountryCard from '@/components/CountryCard';
 import CountryModal from '@/components/CountryModal';
 import Footer from '@/components/Footer';
 import { Country } from '@/types/country';
-import { initialCountries } from '@/data/countryList';
 
 export default function Home() {
-  const [countries, setCountries] = useState<Country[]>(initialCountries);
+  const [countries, setCountries] = useState<Country[]>([]);
   const [dbSource, setDbSource] = useState<string>('Connecting to MySQL...');
+  const [dbError, setDbError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedRegion, setSelectedRegion] = useState<string>('All');
@@ -52,16 +52,19 @@ export default function Home() {
     async function fetchCountries() {
       try {
         setLoading(true);
+        setDbError(null);
         const res = await fetch('/api/countries');
-        if (res.ok) {
-          const json = await res.json();
-          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
-            setCountries(json.data);
-            setDbSource(json.source || 'MySQL (nextjsdemo)');
-          }
+        const json = await res.json();
+        if (res.ok && json.success) {
+          setCountries(json.data || []);
+          setDbSource(json.source || 'MySQL (nextjsdemo.countries)');
+        } else {
+          setDbError(json.error || 'Failed to fetch country data from MySQL database.');
+          setDbSource('MySQL Connection Error');
         }
-      } catch (err) {
-        console.warn('Failed to fetch from API, using fallback countries:', err);
+      } catch (err: any) {
+        setDbError(`Error connecting to API: ${err?.message || 'Unknown error'}`);
+        setDbSource('MySQL Connection Failed');
       } finally {
         setLoading(false);
       }
@@ -332,8 +335,25 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Results Container */}
-        {loading ? (
+        {/* DB Error Banner */}
+        {dbError ? (
+          <div className="glass-panel" style={{
+            padding: '32px 24px',
+            textAlign: 'center',
+            marginBottom: '32px',
+            border: '1px solid rgba(239, 68, 68, 0.4)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)'
+          }}>
+            <div style={{ fontSize: '40px', marginBottom: '12px' }}>⚠️</div>
+            <h3 style={{ color: '#f87171', fontSize: '1.2rem', marginBottom: '8px' }}>MySQL Connection Error</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '600px', margin: '0 auto 16px' }}>
+              {dbError}
+            </p>
+            <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
+              Make sure your MySQL database <code style={{ color: '#f87171' }}>nextjsdemo</code> is running and Environment Variables (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) are properly set.
+            </p>
+          </div>
+        ) : loading ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
             <div style={{ fontSize: '32px', marginBottom: '12px' }}>🔄</div>
             <div>Loading countries from MySQL database...</div>
