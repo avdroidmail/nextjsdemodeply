@@ -21,7 +21,7 @@ export default function Footer() {
       }}>
         <div>
           <div style={{ fontWeight: '700', fontSize: '1rem', color: '#ffffff' }}>
-            🌍 World Explorer & Country Directory
+            🌍 World Explorer and Country Directory
           </div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
             Connected to local MySQL database <code style={{ color: 'var(--accent-emerald)' }}>nextjsdemo</code> • Next.js 15 App Router
